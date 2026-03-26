@@ -1,14 +1,13 @@
-import { describe, it, before, after } from 'node:test';
 import assert from 'node:assert';
 import fs from 'node:fs';
-import path from 'node:path';
 import os from 'node:os';
-
-import { consolidate, getStats } from '../src/consolidator.js';
+import path from 'node:path';
+import { after, before, describe, it } from 'node:test';
 import { analyzeFile } from '../src/analyzer.js';
-import { normalizeDates, hasRelativeDates } from '../src/normalizer.js';
-import { similarity, deduplicate, findExactDuplicates } from '../src/deduplicator.js';
-import { checkStaleness, pruneEntries, trimToMaxLines, isProtected } from '../src/pruner.js';
+import { consolidate, getStats } from '../src/consolidator.js';
+import { deduplicate, findExactDuplicates, similarity } from '../src/deduplicator.js';
+import { hasRelativeDates, normalizeDates } from '../src/normalizer.js';
+import { checkStaleness, isProtected, pruneEntries, trimToMaxLines } from '../src/pruner.js';
 
 // ── Helpers ──
 
