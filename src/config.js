@@ -1,9 +1,7 @@
-'use strict';
+import fs from 'node:fs';
+import path from 'node:path';
 
-const path = require('node:path');
-const fs = require('node:fs');
-
-const DEFAULT_CONFIG = {
+export const DEFAULT_CONFIG = {
   maxLines: 200,
   lookbackDays: 30,
   memoryDir: 'memory',
@@ -14,22 +12,22 @@ const DEFAULT_CONFIG = {
     'Preferences & Style',
     'Technical Decisions',
     'Important Events',
-    'Lessons Learned'
+    'Lessons Learned',
   ],
   preservePatterns: ['⚠️', 'IMPORTANT', 'NEVER', 'ALWAYS'],
   triggerThreshold: {
     minHoursSinceLastRun: 24,
-    minNewFiles: 5
+    minNewFiles: 5,
   },
   backupDir: '.autodream-backups',
   reportDir: '.autodream-reports',
   lastRun: null,
-  filesProcessedAtLastRun: []
+  filesProcessedAtLastRun: [],
 };
 
 const CONFIG_FILE = '.autodream.json';
 
-function loadConfig(workspacePath) {
+export function loadConfig(workspacePath) {
   const configPath = path.join(workspacePath, CONFIG_FILE);
   let userConfig = {};
 
@@ -49,7 +47,7 @@ function loadConfig(workspacePath) {
   return { ...DEFAULT_CONFIG, ...userConfig };
 }
 
-function saveConfig(workspacePath, config) {
+export function saveConfig(workspacePath, config) {
   const configPath = path.join(workspacePath, CONFIG_FILE);
   const toSave = {
     maxLines: config.maxLines,
@@ -60,9 +58,7 @@ function saveConfig(workspacePath, config) {
     preservePatterns: config.preservePatterns,
     triggerThreshold: config.triggerThreshold,
     lastRun: config.lastRun,
-    filesProcessedAtLastRun: config.filesProcessedAtLastRun
+    filesProcessedAtLastRun: config.filesProcessedAtLastRun,
   };
-  fs.writeFileSync(configPath, JSON.stringify(toSave, null, 2) + '\n', 'utf-8');
+  fs.writeFileSync(configPath, `${JSON.stringify(toSave, null, 2)}\n`, 'utf-8');
 }
-
-module.exports = { DEFAULT_CONFIG, loadConfig, saveConfig };

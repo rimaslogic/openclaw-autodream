@@ -123,16 +123,16 @@ Create `.autodream.json` in workspace root to customize:
 <!-- Last consolidated: 2026-03-25T17:00:00Z | Files processed: 31 | Entries: 47 -->
 
 ## People & Relationships
-- **Julio Perez** — Team Lead test run passed (2026-03-25)
+- **Bob Smith** — Team Lead test run passed (2026-03-25)
 
 ## Projects & Work
-- **Cloudvisor** — Q1 review: 30.1% margin, targeting 40% (2026-03-25)
+- **Acme Corp** — Q1 review: 30.1% margin, targeting 40% (2026-03-25)
 
 ## Preferences & Style
 - Values precision and factual accuracy (2026-02-01)
 
 ## Technical Decisions
-- Using Supabase + Vercel for Mentalway project (2026-03-18)
+- Using Supabase + Vercel for Project Alpha (2026-03-18)
 
 ## Lessons Learned
 - Always backup before modifying production data (2026-02-15)

@@ -1,6 +1,7 @@
 {
   "name": "openclaw-autodream",
   "version": "1.0.0",
+  "type": "module",
   "description": "Automatic memory consolidation for OpenClaw agents — like REM sleep for AI memory files",
   "main": "src/index.js",
   "bin": {
@@ -8,6 +9,8 @@
   },
   "scripts": {
     "test": "node --test test/*.test.js",
+    "lint": "biome check src/ test/ bin/",
+    "format": "biome format --write src/ test/ bin/",
     "autodream": "node bin/autodream.js"
   },
   "keywords": [
@@ -17,10 +20,10 @@
     "ai-agent",
     "autodream"
   ],
-  "author": "Rimas Lukaszewicz",
+  "author": "rimaslogic",
   "license": "MIT",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.0.0"
   },
   "files": [
     "bin/",
@@ -32,6 +35,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/rimasluk/openclaw-autodream"
+    "url": "https://github.com/rimaslogic/openclaw-autodream"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.0.0"
   }
 }

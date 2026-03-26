@@ -31,7 +31,7 @@ npm install -g openclaw-autodream
 Or clone and link:
 
 ```bash
-git clone https://github.com/rimasluk/openclaw-autodream.git
+git clone https://github.com/rimaslogic/openclaw-autodream.git
 cd openclaw-autodream
 npm link
 ```
@@ -129,12 +129,12 @@ Create `.autodream.json` in your workspace root:
 <!-- Last consolidated: 2026-03-25T17:00:00Z | Files processed: 29 | Entries: 123 -->
 
 ## People & Relationships
-- **Julio Perez** — Team Lead test run passed, all scores ≥4/5 (2026-03-25)
-- **Anna Kowalski** — Q2 budget approved (2026-03-21)
+- **Bob Smith** — Team Lead test run passed, all scores ≥4/5 (2026-03-25)
+- **Carol Davis** — Q2 budget approved (2026-03-21)
 
 ## Projects & Work
-- **Cloudvisor** — Q1 review: 30.1% margin, targeting 40% (2026-03-25)
-- **Mentalway** — Supabase + Vercel architecture decided (2026-03-18)
+- **Acme Corp** — Q1 review: 30.1% margin, targeting 40% (2026-03-25)
+- **Project Alpha** — Supabase + Vercel architecture decided (2026-03-18)
 
 ## Preferences & Style
 - Values precision, no tolerance for hallucinations (2026-02-01)

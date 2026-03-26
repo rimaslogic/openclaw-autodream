@@ -1,12 +1,10 @@
-'use strict';
-
-const { stripMarkdown, simpleHash } = require('./utils');
+import { simpleHash, stripMarkdown } from './utils.js';
 
 /**
  * Compute similarity between two strings using bigram overlap (Dice coefficient).
  * Returns a value between 0 (completely different) and 1 (identical).
  */
-function similarity(a, b) {
+export function similarity(a, b) {
   if (!a || !b) return 0;
 
   const strA = stripMarkdown(a).toLowerCase();
@@ -35,17 +33,15 @@ function similarity(a, b) {
 
 /**
  * Deduplicate a list of entries.
- * Each entry is { text, date, source, category }.
  * Returns deduplicated list, keeping the most recent version of duplicates.
  *
  * @param {Array} entries - Array of entry objects
  * @param {number} threshold - Similarity threshold (0-1), default 0.7
  * @returns {{ kept: Array, removed: Array }}
  */
-function deduplicate(entries, threshold = 0.7) {
+export function deduplicate(entries, threshold = 0.7) {
   if (!entries || entries.length === 0) return { kept: [], removed: [] };
 
-  // Sort by date descending (most recent first)
   const sorted = [...entries].sort((a, b) => {
     if (!a.date && !b.date) return 0;
     if (!a.date) return 1;
@@ -63,7 +59,6 @@ function deduplicate(entries, threshold = 0.7) {
     const entry = sorted[i];
     kept.push(entry);
 
-    // Check remaining entries for duplicates
     for (let j = i + 1; j < sorted.length; j++) {
       if (usedIndices.has(j)) continue;
 
@@ -73,7 +68,7 @@ function deduplicate(entries, threshold = 0.7) {
         removed.push({
           ...sorted[j],
           reason: `Duplicate of entry from ${entry.date} (similarity: ${(sim * 100).toFixed(0)}%)`,
-          similarTo: entry.text.substring(0, 80)
+          similarTo: entry.text.substring(0, 80),
         });
       }
     }
@@ -85,7 +80,7 @@ function deduplicate(entries, threshold = 0.7) {
 /**
  * Find exact duplicates (hash-based, fast)
  */
-function findExactDuplicates(entries) {
+export function findExactDuplicates(entries) {
   const seen = new Map();
   const unique = [];
   const duplicates = [];
@@ -95,7 +90,7 @@ function findExactDuplicates(entries) {
     if (seen.has(hash)) {
       duplicates.push({
         ...entry,
-        reason: `Exact duplicate of entry from ${seen.get(hash).date}`
+        reason: `Exact duplicate of entry from ${seen.get(hash).date}`,
       });
     } else {
       seen.set(hash, entry);
@@ -105,5 +100,3 @@ function findExactDuplicates(entries) {
 
   return { unique, duplicates };
 }
-
-module.exports = { similarity, deduplicate, findExactDuplicates };

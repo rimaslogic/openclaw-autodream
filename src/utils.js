@@ -1,13 +1,11 @@
-'use strict';
-
-const fs = require('node:fs');
-const path = require('node:path');
+import fs from 'node:fs';
+import path from 'node:path';
 
 /**
  * Resolve a path within a base directory, preventing path traversal.
  * Throws if the resolved path escapes the base.
  */
-function safePath(base, relative) {
+export function safePath(base, relative) {
   const resolved = path.resolve(base, relative);
   const resolvedBase = path.resolve(base);
   if (!resolved.startsWith(resolvedBase + path.sep) && resolved !== resolvedBase) {
@@ -19,7 +17,7 @@ function safePath(base, relative) {
 /**
  * Extract date from a daily memory filename like "2026-03-25.md"
  */
-function extractDateFromFilename(filename) {
+export function extractDateFromFilename(filename) {
   const match = filename.match(/^(\d{4}-\d{2}-\d{2})\.md$/);
   return match ? match[1] : null;
 }
@@ -27,7 +25,7 @@ function extractDateFromFilename(filename) {
 /**
  * Parse a YYYY-MM-DD string into a Date object (local midnight)
  */
-function parseDate(dateStr) {
+export function parseDate(dateStr) {
   const [y, m, d] = dateStr.split('-').map(Number);
   return new Date(y, m - 1, d);
 }
@@ -35,7 +33,7 @@ function parseDate(dateStr) {
 /**
  * Format date as YYYY-MM-DD
  */
-function formatDate(date) {
+export function formatDate(date) {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, '0');
   const d = String(date.getDate()).padStart(2, '0');
@@ -45,23 +43,24 @@ function formatDate(date) {
 /**
  * Get all daily memory files from the memory directory, sorted by date
  */
-function getDailyFiles(memoryDirPath) {
+export function getDailyFiles(memoryDirPath) {
   if (!fs.existsSync(memoryDirPath)) return [];
 
-  return fs.readdirSync(memoryDirPath)
-    .filter(f => /^\d{4}-\d{2}-\d{2}\.md$/.test(f))
+  return fs
+    .readdirSync(memoryDirPath)
+    .filter((f) => /^\d{4}-\d{2}-\d{2}\.md$/.test(f))
     .sort()
-    .map(f => ({
+    .map((f) => ({
       filename: f,
       date: extractDateFromFilename(f),
-      path: path.join(memoryDirPath, f)
+      path: path.join(memoryDirPath, f),
     }));
 }
 
 /**
  * Read file contents safely
  */
-function readFileSafe(filePath) {
+export function readFileSafe(filePath) {
   try {
     return fs.readFileSync(filePath, 'utf-8');
   } catch {
@@ -72,14 +71,14 @@ function readFileSafe(filePath) {
 /**
  * Ensure a directory exists
  */
-function ensureDir(dirPath) {
+export function ensureDir(dirPath) {
   fs.mkdirSync(dirPath, { recursive: true });
 }
 
 /**
  * Count lines in a string
  */
-function countLines(text) {
+export function countLines(text) {
   if (!text) return 0;
   return text.split('\n').length;
 }
@@ -87,18 +86,18 @@ function countLines(text) {
 /**
  * Generate ISO timestamp string
  */
-function timestamp() {
+export function timestamp() {
   return new Date().toISOString();
 }
 
 /**
  * Simple hash for deduplication (content-based)
  */
-function simpleHash(str) {
+export function simpleHash(str) {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     const chr = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + chr;
+    hash = (hash << 5) - hash + chr;
     hash |= 0;
   }
   return hash.toString(36);
@@ -107,7 +106,7 @@ function simpleHash(str) {
 /**
  * Strip markdown formatting for comparison
  */
-function stripMarkdown(text) {
+export function stripMarkdown(text) {
   return text
     .replace(/#{1,6}\s+/g, '')
     .replace(/\*\*([^*]+)\*\*/g, '$1')
@@ -121,7 +120,7 @@ function stripMarkdown(text) {
 /**
  * Extract bullet points from markdown text
  */
-function extractBullets(text) {
+export function extractBullets(text) {
   const lines = text.split('\n');
   const bullets = [];
   let currentBullet = null;
@@ -133,7 +132,7 @@ function extractBullets(text) {
       currentBullet = { indent: bulletMatch[1].length, text: bulletMatch[2].trim() };
     } else if (currentBullet && line.match(/^\s+\S/) && !line.match(/^#{1,6}\s/)) {
       // Continuation line
-      currentBullet.text += ' ' + line.trim();
+      currentBullet.text += ` ${line.trim()}`;
     } else {
       if (currentBullet) bullets.push(currentBullet);
       currentBullet = null;
@@ -146,7 +145,7 @@ function extractBullets(text) {
 /**
  * Extract sections (## headers) from markdown
  */
-function extractSections(text) {
+export function extractSections(text) {
   const lines = text.split('\n');
   const sections = [];
   let currentSection = null;
@@ -158,7 +157,7 @@ function extractSections(text) {
       currentSection = {
         level: headerMatch[1].length,
         title: headerMatch[2].trim(),
-        content: []
+        content: [],
       };
     } else if (currentSection) {
       currentSection.content.push(line);
@@ -167,19 +166,3 @@ function extractSections(text) {
   if (currentSection) sections.push(currentSection);
   return sections;
 }
-
-module.exports = {
-  safePath,
-  extractDateFromFilename,
-  parseDate,
-  formatDate,
-  getDailyFiles,
-  readFileSafe,
-  ensureDir,
-  countLines,
-  timestamp,
-  simpleHash,
-  stripMarkdown,
-  extractBullets,
-  extractSections
-};

@@ -1,8 +1,11 @@
 #!/usr/bin/env node
-'use strict';
 
-const path = require('node:path');
-const { consolidate, getStats } = require('../src/consolidator');
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { consolidate, getStats } from '../src/consolidator.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const USAGE = `
   autodream — Memory consolidation for OpenClaw agents
@@ -37,13 +40,14 @@ function main() {
   }
 
   if (args.includes('--version') || args.includes('-v')) {
-    const pkg = require('../package.json');
+    const pkgPath = path.join(__dirname, '..', 'package.json');
+    const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
     console.log(`autodream v${pkg.version}`);
     process.exit(0);
   }
 
   // Parse arguments
-  const workspacePath = path.resolve(args.find(a => !a.startsWith('--')) || '.');
+  const workspacePath = path.resolve(args.find((a) => !a.startsWith('--')) || '.');
   const dryRun = args.includes('--dry-run');
   const force = args.includes('--force');
   const verbose = args.includes('--verbose');
@@ -53,7 +57,7 @@ function main() {
   const maxLinesIdx = args.indexOf('--max-lines');
   if (maxLinesIdx !== -1 && args[maxLinesIdx + 1]) {
     maxLines = parseInt(args[maxLinesIdx + 1], 10);
-    if (isNaN(maxLines) || maxLines < 20) {
+    if (Number.isNaN(maxLines) || maxLines < 20) {
       console.error('Error: --max-lines must be a number >= 20');
       process.exit(1);
     }
@@ -63,14 +67,13 @@ function main() {
   const lookbackIdx = args.indexOf('--lookback');
   if (lookbackIdx !== -1 && args[lookbackIdx + 1]) {
     lookbackDays = parseInt(args[lookbackIdx + 1], 10);
-    if (isNaN(lookbackDays) || lookbackDays < 1) {
+    if (Number.isNaN(lookbackDays) || lookbackDays < 1) {
       console.error('Error: --lookback must be a number >= 1');
       process.exit(1);
     }
   }
 
   // Verify workspace exists
-  const fs = require('node:fs');
   if (!fs.existsSync(workspacePath)) {
     console.error(`Error: Workspace path does not exist: ${workspacePath}`);
     process.exit(1);
@@ -90,13 +93,15 @@ function main() {
     console.log(`  Max lines:         ${stats.maxLines}`);
     console.log(`  Date range:        ${stats.oldestFile || 'N/A'} → ${stats.newestFile || 'N/A'}`);
     console.log(`  Would trigger:     ${stats.wouldTrigger ? '✅ yes' : '❌ no'}`);
-    console.log(`  Trigger threshold: ${stats.triggerThreshold.minHoursSinceLastRun}h + ${stats.triggerThreshold.minNewFiles} files`);
+    console.log(
+      `  Trigger threshold: ${stats.triggerThreshold.minHoursSinceLastRun}h + ${stats.triggerThreshold.minNewFiles} files`,
+    );
     console.log('');
     process.exit(0);
   }
 
   // Run consolidation
-  console.log(`\n🌙 Autodream — Memory Consolidation`);
+  console.log('\n🌙 Autodream — Memory Consolidation');
   console.log(`   Workspace: ${workspacePath}`);
   if (dryRun) console.log('   Mode: DRY RUN (no files will be modified)');
   if (force) console.log('   Mode: FORCE (ignoring trigger conditions)');
@@ -108,7 +113,7 @@ function main() {
       force,
       verbose,
       maxLines,
-      lookbackDays
+      lookbackDays,
     });
 
     if (report.skipped) {
@@ -143,7 +148,6 @@ function main() {
       console.log('\n✅ Consolidation complete!');
     }
     console.log('');
-
   } catch (err) {
     console.error(`\n❌ Error: ${err.message}`);
     if (verbose) console.error(err.stack);
