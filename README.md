@@ -24,11 +24,26 @@ Autodream runs a **4-phase consolidation pipeline** (no LLM required):
 
 ## Installation
 
+### Via ClawHub (Recommended)
+
+```bash
+npx clawhub@latest install autodream
+```
+
+Or with npm globally:
+
+```bash
+npm install -g clawhub
+clawhub install autodream
+```
+
+### Via npm
+
 ```bash
 npm install -g openclaw-autodream
 ```
 
-Or clone and link:
+### Manual Installation
 
 ```bash
 git clone https://github.com/rimaslogic/openclaw-autodream.git
@@ -174,6 +189,17 @@ Or use with heartbeats by adding to your `HEARTBEAT.md`:
 ## Memory Consolidation
 - Run `autodream <workspace> --stats` to check if needed
 - If "Would trigger: ✅ yes", run `autodream <workspace> --verbose`
+```
+
+## Available on ClawHub
+
+This skill is also available on **[ClawHub](https://clawhub.ai/rimaslogic/autodream)** — the skill registry for AI agents:
+
+```bash
+# One-command install from ClawHub
+npx clawhub@latest install autodream
+
+# Or browse at https://clawhub.ai/rimaslogic/autodream
 ```
 
 ## Comparison: Claude Code Autodream vs OpenClaw Autodream
